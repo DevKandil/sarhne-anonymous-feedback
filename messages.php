@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                     </div>
 
                                 </div>
-                                
+
                                 <div class="hr"></div>
 
                                 <center style="font-size: 14px;direction: rtl;" class="kill_long_text">
@@ -239,7 +239,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <article class="timeline-entry">
                         <div class="timeline-entry-inner">
                             <div class="timeline-icon bg-secondary" style="cursor: pointer;" onclick="open_link('<?= $receiver_user['username'] ?>');">
-                                <img src="assets/img/<?= ($receiver_user['profile_pic'] !== '') ? 'profile-images/' . $receiver_user['profile_pic'] : "male-avatar.svg"; ?>" class="img_user_found">
+                                <?php
+                                $default_avatar = ($receiver_user['gender'] == 1) ? 'male-avatar.svg' : 'female-avatar.svg';
+                                ?>
+                                <img src="assets/img/<?= ($receiver_user['profile_pic']) ? 'profile-images/' . $receiver_user['profile_pic'] : $default_avatar; ?>" class="img_user_found">
                             </div>
                             <div class="timeline-label">
                                 <div class="containe">
@@ -274,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             echo 'false';
         }
         exit();
-    } elseif ($_POST['do'] == 'fav') {
+    } elseif ($_POST['do'] == 'fav_msg') {
 
         $stmt = $con->prepare("SELECT * FROM `messages` WHERE `id` = ?");
         $stmt->execute([$_POST['id']]);
@@ -1301,17 +1304,16 @@ include $tpl . 'header.php';
         function fav(id) {
             document.getElementById("fav_" + id).src = "assets/img/loader.svg";
 
-
             $.ajax({
                 type: 'POST',
                 url: 'messages.php',
                 data: {
-                    do: 'fav',
+                    do: 'fav_msg',
                     id: id
                 },
-                success: function(res) {
+                success: function(response) {
 
-                    if (res.includes("true")) {
+                    if (response.includes("true")) {
                         document.getElementById("fav_" + id).src = "assets/img/stary.svg";
                         nativeToast({
                             message: ' تم أضافة هذه الرسالة الى المفضلة ',
@@ -1319,7 +1321,7 @@ include $tpl . 'header.php';
                             position: 'center'
                         })
 
-                    } else if (res.includes("false")) {
+                    } else if (response.includes("false")) {
                         document.getElementById("fav_" + id).src = "assets/img/star.svg";
                         nativeToast({
                             message: ' تم أزالة هذه الرسالة من المفضلة ',
