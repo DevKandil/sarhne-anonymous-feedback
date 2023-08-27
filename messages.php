@@ -146,12 +146,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                     </div>
 
                                 </div>
+                                
                                 <div class="hr"></div>
 
-                                <center style="font-size: 14px;direction: rtl;" class="kill_long_text"><?= $message['content']; ?>
+                                <center style="font-size: 14px;direction: rtl;" class="kill_long_text">
 
+                                    <?= $message['content']; ?>
 
                                 </center>
+
                                 <div class="hr"></div>
 
                                 <div class="textBottom">
@@ -236,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <article class="timeline-entry">
                         <div class="timeline-entry-inner">
                             <div class="timeline-icon bg-secondary" style="cursor: pointer;" onclick="open_link('<?= $receiver_user['username'] ?>');">
-                                <img src="assets/img/<?= ($receiver_user['profile_pic'] !=='') ? 'profile-images/'.$receiver_user['profile_pic'] : "male-avatar.svg"; ?>" class="img_user_found">
+                                <img src="assets/img/<?= ($receiver_user['profile_pic'] !== '') ? 'profile-images/' . $receiver_user['profile_pic'] : "male-avatar.svg"; ?>" class="img_user_found">
                             </div>
                             <div class="timeline-label">
                                 <div class="containe">
@@ -256,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     </article>
                 </div>
             </div>
-            
+
 <?php
         }
 

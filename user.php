@@ -3,11 +3,22 @@ $pageTitle = "صارحني برسالة سرية";
 include "init.php";
 session_start();
 
+// echo "##### SESSION #####\n";
+// echo "<pre>";
+// print_r($_SESSION);
+// echo "</pre>";
+
 $stmt = $con->prepare("SELECT * FROM users WHERE username = :user");
 $stmt->bindParam(":user", $_GET['user']);
 $stmt->execute();
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$total_visitors_num = $user['visitors_num'] + 1;
+$stmt = $con->prepare("UPDATE `users` SET `visitors_num` = :zvisitors_num WHERE `users`.`username` = :zusername");
+$stmt->bindParam(":zvisitors_num", $total_visitors_num);
+$stmt->bindParam(":zusername", $user['username']);
+$stmt->execute();
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -72,7 +83,7 @@ include $tpl . 'header.php';
             <img class="modal-content" id="img01">
         </div>
     </div>
-    
+
     <div id="center" class="noselect" dir="rtl">
         <div class="s_left">
             <img src="assets/img/l.png" class="img_s_left">
@@ -118,8 +129,6 @@ include $tpl . 'header.php';
             <script src="assets/js/jquery.min.js"></script>
             <script src="assets/js/jquery-confirm.min.js"></script>
             <script>
-
-
                 var show_my_info = 'false';
                 <?php
 
@@ -336,7 +345,7 @@ include $tpl . 'header.php';
 
         <div class="hr"></div>
         <div class="user-report" dir="rtl">
-            <span> الزيارات : 0</span>
+            <span> الزيارات : <?= $user['visitors_num'] ?></span>
             <p id="report"><a href="#mailto:sarhne.com@gmail.com?subject=البلاغ عن اساءة استخدام&body=مرحباً , لقد عثرت على رابط اعتقد انه يخالف شروط موقع صارحني الرجاء النظر على الرابط التالي : https://sarhne.com/sarhny444 " style="font-size: 13px;" class="white">أبلاغ؟</a> </p>
         </div>
     </div>
@@ -499,6 +508,11 @@ include $tpl . 'header.php';
                         sender_ip: "<?= $_SERVER['REMOTE_ADDR'] ?>",
                     },
                     beforeSend: function() {
+                        // console.log(receiver_id);
+                        // console.log(message);
+                        // console.log(show_sender_info);
+                        // console.log(sender_id);
+                        // console.log(sender_ip);
                         disabled_button();
                     },
                     success: function(data, status, error) {
@@ -518,14 +532,14 @@ include $tpl . 'header.php';
                             showalert("  لم يتم العثور على المستخدم  ");
                             smoothScroll(document.getElementById('erorrid'));
 
-                        } 
+                        }
                         // else if (data.includes("block")) {
                         //     showerorr('warning', 'خطأ', 'تم رفض الوصول قد يكون تم حظرك من قبل هذا المستخدم');
                         //     showalert(" تم رفض الوصول قد يكون تم حظرك من قبل هذا المستخدم  ");
                         //     smoothScroll(document.getElementById('erorrid'));
 
                         // }
-                         else if (data.includes("successfully")) {
+                        else if (data.includes("successfully")) {
                             location.href = 'done.php';
 
                         } else {
